@@ -18,7 +18,7 @@ resolvers ++= Seq(
 
 graphSettings
 
-val jacksonVersion = "2.4.2"
+val jacksonVersion = "2.6.2"
 val log4jVersion   = "2.4.1"
 val slf4jVersion   = "1.7.12"
 
