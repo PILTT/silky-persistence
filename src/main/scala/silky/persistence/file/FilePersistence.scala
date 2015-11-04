@@ -1,6 +1,5 @@
 package silky.persistence.file
 
-import java.io.FileNotFoundException
 import java.nio.file.Paths
 
 import silky.persistence.{Entry, Persistence}
@@ -31,7 +30,8 @@ class FilePersistence(baseDir: String, fileExtension: String = "json") extends P
 
   def move(ref: String, source: String, target: String) = {
     val sourcePath = pathFor(source, ref)
-    if (!sourcePath.toFile.exists()) throw new FileNotFoundException(s"$sourcePath does not exist")
+    require(sourcePath.toFile.exists(), s"$sourcePath does not exist")
+    createIfRequired(directoryFor(target))
     Filepath.move(sourcePath, pathFor(target, ref))
   }
 

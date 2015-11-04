@@ -43,6 +43,14 @@ class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixtur
     }
   }
 
+  "move simply moves the file containing the given entry from one directory (context) to another" in { td ⇒
+    new Fixture(td.name, ticket4) {
+      val target = "tickets"
+      persistence.move(ticket4.ref, ticket4.context, target)
+      persistence.find(target, ticket4.ref) mustBe Some(ticket4.copy(context = target))
+    }
+  }
+
   abstract class Fixture(testName: String, entries: Entry*) {
     val persistence = new FilePersistence(s"target/tests/${getClass.getPackage.getName}.$suiteName/$testName/data")
     entries foreach persistence.save
