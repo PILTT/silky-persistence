@@ -8,19 +8,25 @@ import silky.persistence.{Entry, Persistence}
 
 class ElasticsearchPersistence(_index: String, client: ElasticClient) extends Persistence {
 
-  def initialise(contexts: String*) = {
-/*
-    // TODO: work out how to make the DSL produce the below raw mappings
-    client.execute { create index _index mappings {
-      "_default_" as (
-                id typed StringType index NotAnalyzed store true,
-        "metadata" typed NestedType
-        )
-    } }.await
-*/
-    val raw = """{ "mappings": { "_default_": { "_id": { "index": "not_analyzed" }, "properties": { "metadata": { "type": "nested" } } } } }"""
-    client.execute { create index _index source raw }.await
-  }
+  private[elasticsearch] def createDefaultMappings(): Unit =
+    client.execute {
+      // TODO: work out how to make the DSL produce the below raw mappings
+//      create index _index mappings {
+//        "_default_" as (
+//          id typed StringType index NotAnalyzed store true,
+//          "metadata" typed NestedType
+//          )
+//      }
+      create index _index source
+        """{
+          |  "mappings": {
+          |    "_default_": {
+          |      "_id": { "index": "not_analyzed" },
+          |      "properties": { "metadata": { "type": "nested" } }
+          |    }
+          |  }
+          |}""".stripMargin
+    }.await
 
   def lastRefAcross(prefix: Char, contexts: String*) = {
     val query = search in _index types (contexts: _*) fetchSource false sort (field sort "_id" order DESC) postFilter prefixFilter("_id", prefix) limit 1

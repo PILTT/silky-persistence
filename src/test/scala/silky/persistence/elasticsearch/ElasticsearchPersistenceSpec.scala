@@ -39,9 +39,9 @@ class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with Befor
 
   override protected def beforeAll() = {
     elasticsearch.start()
+    persistence.createDefaultMappings()
 
     val entries = message1 :: ticket1 :: ticket2 :: ticket3 :: ticket4 :: xs
-    persistence.initialise(entries.map(_.context).distinct: _*)
     entries foreach persistence.save
 
     refresh(indexName)
