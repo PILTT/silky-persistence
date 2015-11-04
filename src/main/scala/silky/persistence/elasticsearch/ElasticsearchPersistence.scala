@@ -23,7 +23,7 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient) extends Pe
   }
 
   def lastRefAcross(prefix: Char, contexts: String*) = {
-    val query = search in _index types (contexts: _*) fetchSource false sort { field sort "_id" order DESC } limit 1
+    val query = search in _index types (contexts: _*) fetchSource false sort (field sort "_id" order DESC) postFilter prefixFilter("_id", prefix) limit 1
     val refs  = client.execute { query }.await.getHits.hits().map(_.id())
     if (refs.isEmpty) "00000000" else refs.head.replace(String.valueOf(prefix), "")
   }

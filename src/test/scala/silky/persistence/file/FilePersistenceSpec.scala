@@ -15,7 +15,13 @@ class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixtur
 
   "lastRefAcross returns the last reference across multiple contexts" in { td ⇒
     new Fixture(td.name, ticket1, ticket2, ticket3, ticket4) {
-      persistence.lastRefAcross(prefix = 'T',"deleted", "incoming", "tickets") mustBe "00000004"
+      persistence.lastRefAcross(prefix = 'T', "deleted", "incoming", "tickets") mustBe "00000004"
+    }
+  }
+
+  "lastRefAcross returns '00000000' when no matching entries are found in a given set of contexts" in { td ⇒
+    new Fixture(td.name, ticket1, ticket2, ticket3, ticket4) {
+      persistence.lastRefAcross(prefix = 'T', "one", "two", "three") mustBe "00000000"
     }
   }
 

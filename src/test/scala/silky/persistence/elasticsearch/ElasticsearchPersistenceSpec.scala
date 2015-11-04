@@ -51,7 +51,11 @@ class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with Befor
   override protected def afterAll()  = elasticsearch.stop()
 
   "lastRefAcross returns the last reference across multiple contexts" in {
-    persistence.lastRefAcross(prefix = 'T', "deleted", "incoming", "tickets") mustBe "00000015"
+    persistence.lastRefAcross(prefix = 'T', "incoming", "tickets") mustBe "00000015"
+  }
+
+  "lastRefAcross returns '00000000' when no matching entries are found in a given set of contexts" in {
+    persistence.lastRefAcross(prefix = 'M', "incoming", "tickets") mustBe "00000000"
   }
 
   "find returns an entry existing in a given context" in {
