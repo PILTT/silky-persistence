@@ -37,6 +37,6 @@ class FilePersistence(baseDir: String, fileExtension: String = "json") extends P
 
   private def filesIn(context: String) = directoryFor(context).files
   private def directoryFor(context: String) = Directory(s"$baseDir/$context")
-  private def createIfRequired(directory: Directory) = if (directory.notExists) directory.createDirectory()
+  private def createIfRequired(directory: Directory) = if (!directory.exists) directory.createDirectory()
   private def pathFor(context: String, ref: String) = Paths.get(s"$baseDir/$context/$ref.$fileExtension")
 }
