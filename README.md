@@ -5,12 +5,12 @@ A simple persistence API for JSON documents represented as strings.
 
 Bundled implementations can use the filesystem or the client of an Elasticsearch instance.
 
-[![Build Status](https://secure.travis-ci.org/PILTT/silky-persistence.svg)](http://travis-ci.org/PILTT/silky-persistence) [![Coverage Status](https://coveralls.io/repos/PILTT/silky-persistence/badge.svg?branch=master&service=github)](https://coveralls.io/github/PILTT/silky-persistence?branch=master) [![codecov.io](https://codecov.io/github/PILTT/silky-persistence/coverage.svg?branch=master)](https://codecov.io/github/PILTT/silky-persistence?branch=master&view=all)
+[![Build Status](https://secure.travis-ci.org/PILTT/silky-persistence.svg)](http://travis-ci.org/PILTT/silky-persistence) [![Coverage Status](https://coveralls.io/repos/PILTT/silky-persistence/badge.svg?branch=master&service=github)](https://coveralls.io/github/PILTT/silky-persistence?branch=master) [![codecov.io](https://codecov.io/github/PILTT/silky-persistence/coverage.svg?branch=master)](https://codecov.io/github/PILTT/silky-persistence?branch=master&view=all) [![GitHub issues](https://img.shields.io/github/issues/PILTT/silky-persistence.svg)](https://github.com/PILTT/silky-persistence/issues)
 
 ## SBT usage
 
 ```
-libraryDependencies += "com.github.piltt" %% "silky-persistence" % "1.0.19"
+libraryDependencies += "com.github.piltt" %% "silky-persistence" % "1.0.21"
 ```
 
 [<img src="https://img.shields.io/maven-central/v/com.github.piltt/silky-persistence_2.10*.svg?label=latest%20release%20for%202.10"/>](http://search.maven.org/#search%7Cga%7C1%7Cg%3Acom.github.piltt%20a%3Asilky-persistence_2.10) [<img src="https://img.shields.io/maven-central/v/com.github.piltt/silky-persistence_2.11*.svg?label=latest%20release%20for%202.11"/>](http://search.maven.org/#search%7Cga%7C1%7Cg%3Acom.github.piltt%20a%3Asilky-persistence_2.11)
