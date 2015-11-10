@@ -1,13 +1,13 @@
 resolvers     += Resolver.sonatypeRepo("releases")
 updateOptions := updateOptions.value.withCachedResolution(cachedResoluton = true)
 
-val log4jVersion     = "2.4.1"
-val slf4jVersion     = "1.7.12"
+val log4jVersion     = "[2.0.1,2.9.99]"
+val slf4jVersion     = "[1.7.0,1.9.99]"
 val elastic4sVersion = "[1.7.4,1.7.99]"
 
 val slf4j = Seq(
-  "org.slf4j" % "slf4j-api" % slf4jVersion,
-  "org.slf4j" % "slf4j-ext" % slf4jVersion
+  "org.slf4j" % "slf4j-api" % slf4jVersion % "provided",
+  "org.slf4j" % "slf4j-ext" % slf4jVersion % "provided"
 )
 
 val log4j = Seq(
