@@ -1,8 +1,8 @@
 # use container-based infrastructure
-    sudo: false
+sudo: false
 language: scala
-   scala: 2.10.6
-     jdk: oraclejdk7
+scala: 2.10.6
+jdk: oraclejdk7
 
 before_script: ./scripts/prepublish.sh
 script:        ./scripts/ci-build.sh
