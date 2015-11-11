@@ -10,7 +10,7 @@ publishTo <<= version { project_version ⇒
 
 publishMavenStyle := true
 sources in (Compile, doc) := Seq.empty
-mappings in (Compile, packageDoc) += { (baseDirectory.value / "src" / "main" / "README") → "README" }
+mappings in (Compile, packageDoc) += (baseDirectory.value / "src" / "main" / "README") → "README"
 publishArtifact in Test := false
 pomIncludeRepository := { _ ⇒ false }
 
