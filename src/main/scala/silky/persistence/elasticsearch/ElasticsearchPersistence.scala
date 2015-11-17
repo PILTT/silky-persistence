@@ -58,5 +58,6 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
     // retrieve from source
     // save to target
     // delete from source
+    Entry(target, ref, "")
   }
 }

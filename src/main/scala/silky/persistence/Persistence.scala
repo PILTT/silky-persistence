@@ -7,7 +7,7 @@ trait Persistence {
   def save(entry: Entry): Future[Entry]
   def find(context: String, ref: String): Future[Option[Entry]]
   def load(context: String, predicate: String ⇒ Boolean): Future[Seq[Entry]]
-  def move(ref: String, source: String, target: String): Future[Unit]
+  def move(ref: String, source: String, target: String): Future[Entry]
 }
 
 case class Entry(context: String, ref: String, contents: String)

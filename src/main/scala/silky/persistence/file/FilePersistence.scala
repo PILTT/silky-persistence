@@ -5,6 +5,7 @@ import java.nio.file.Paths
 import silky.persistence.{Entry, Persistence}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.reflect.io.File
 
 class FilePersistence(baseDir: String, fileExtension: String = "json")(implicit ctx: ExecutionContext) extends Persistence {
   import reflect.io.Directory
@@ -34,10 +35,11 @@ class FilePersistence(baseDir: String, fileExtension: String = "json")(implicit 
   }
 
   def move(ref: String, source: String, target: String) = Future {
-    val sourcePath = pathFor(source, ref)
+    val (sourcePath, targetPath) = (pathFor(source, ref), pathFor(target, ref))
     require(sourcePath.toFile.exists(), s"$sourcePath does not exist")
     createIfRequired(directoryFor(target))
-    Filepath.move(sourcePath, pathFor(target, ref))
+    Filepath.move(sourcePath, targetPath)
+    Entry(target, ref, new File(targetPath.toFile).slurp())
   }
 
   private def filesIn(context: String) = directoryFor(context).files
