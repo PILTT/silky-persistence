@@ -4,11 +4,11 @@ import java.nio.file.Paths
 
 import silky.persistence.{Entry, Persistence}
 
-import scala.reflect.io.Directory
-
 class FilePersistence(baseDir: String, fileExtension: String = "json") extends Persistence {
+  import concurrent.{ExecutionContext, Future}
+  import reflect.io.Directory
 
-  def lastRefAcross(prefix: Char, contexts: String*): String = {
+  def lastRefAcross(prefix: Char, contexts: String*)(implicit ctx: ExecutionContext) = Future {
     val files = contexts flatMap filesIn filter (f ⇒ f.name.head == prefix && f.extension == fileExtension) sortBy (_.name)
     if (files.isEmpty) "00000000" else files.last.stripExtension.tail
   }

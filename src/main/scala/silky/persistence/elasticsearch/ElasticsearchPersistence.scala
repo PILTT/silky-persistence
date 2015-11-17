@@ -7,6 +7,7 @@ import org.elasticsearch.search.sort.SortOrder.DESC
 import silky.persistence.{Entry, Persistence}
 
 class ElasticsearchPersistence(_index: String, client: ElasticClient) extends Persistence {
+  import concurrent.{ExecutionContext, Future}
 
   private[elasticsearch] def createDefaultMappings(): Unit =
     client.execute {
@@ -28,7 +29,7 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient) extends Pe
           |}""".stripMargin
     }.await
 
-  def lastRefAcross(prefix: Char, contexts: String*) = {
+  def lastRefAcross(prefix: Char, contexts: String*)(implicit ctx: ExecutionContext) = Future {
     val query = search in _index types (contexts: _*) fetchSource false sort (field sort "_id" order DESC) postFilter prefixFilter("_id", prefix) limit 1
     val refs  = client.execute { query }.await.getHits.hits().map(_.id())
     if (refs.isEmpty) "00000000" else refs.head.replace(String.valueOf(prefix), "")

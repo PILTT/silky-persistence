@@ -1,7 +1,9 @@
 package silky.persistence
 
+import scala.concurrent.{ExecutionContext, Future}
+
 trait Persistence {
-  def lastRefAcross(prefix: Char, contexts: String*): String
+  def lastRefAcross(prefix: Char, contexts: String*)(implicit ctx: ExecutionContext): Future[String]
   def save(entry: Entry): Entry
   def find(context: String, ref: String): Option[Entry]
   def load(context: String, predicate: String ⇒ Boolean): Seq[Entry]

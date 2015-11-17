@@ -1,9 +1,11 @@
 package silky.persistence.file
 
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{MustMatchers, fixture}
 import silky.persistence.Entry
 
-class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixture.TestDataFixture {
+class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixture.TestDataFixture with ScalaFutures {
+  import concurrent.ExecutionContext.Implicits.global
 
   private val Seq(message1, ticket1, ticket2, ticket3, ticket4) = Seq(
     Entry("messages", "M00000001", "{ \"message\": \"Hello World!\" }"),
@@ -15,13 +17,13 @@ class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixtur
 
   "lastRefAcross returns the last reference across multiple contexts" in { td ⇒
     new Fixture(td.name, ticket1, ticket2, ticket3, ticket4) {
-      persistence.lastRefAcross(prefix = 'T', "deleted", "incoming", "tickets") mustBe "00000004"
+      persistence.lastRefAcross(prefix = 'T', "deleted", "incoming", "tickets").futureValue mustBe "00000004"
     }
   }
 
   "lastRefAcross returns '00000000' when no matching entries are found in a given set of contexts" in { td ⇒
     new Fixture(td.name, ticket1, ticket2, ticket3, ticket4) {
-      persistence.lastRefAcross(prefix = 'T', "one", "two", "three") mustBe "00000000"
+      persistence.lastRefAcross(prefix = 'T', "one", "two", "three").futureValue mustBe "00000000"
     }
   }
 

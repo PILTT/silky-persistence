@@ -1,11 +1,13 @@
 package silky.persistence.elasticsearch
 
 import com.sksamuel.elastic4s.testkit.ElasticSugar
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.{BeforeAndAfterAll, MustMatchers, WordSpec}
 import silky.elasticsearch.EmbeddedElasticsearch
 import silky.persistence.Entry
 
-class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with BeforeAndAfterAll with ElasticSugar {
+class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with BeforeAndAfterAll with ElasticSugar with ScalaFutures {
+  import concurrent.ExecutionContext.Implicits.global
 
   private val message1 :: ticket1 :: ticket2 :: ticket3 :: ticket4 :: xs = Seq(
     Entry("messages", "M00000123", "{ \"metadata\": { \"status\": \"Pending\" }, \"message\": \"Hello World!\" }"),
@@ -51,11 +53,11 @@ class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with Befor
   override protected def afterAll()  = elasticsearch.stop()
 
   "lastRefAcross returns the last reference across multiple contexts" in {
-    persistence.lastRefAcross(prefix = 'T', "incoming", "tickets") mustBe "00000015"
+    persistence.lastRefAcross(prefix = 'T', "incoming", "tickets").futureValue mustBe "00000015"
   }
 
   "lastRefAcross returns '00000000' when no matching entries are found in a given set of contexts" in {
-    persistence.lastRefAcross(prefix = 'M', "incoming", "tickets") mustBe "00000000"
+    persistence.lastRefAcross(prefix = 'M', "incoming", "tickets").futureValue mustBe "00000000"
   }
 
   "find returns an entry existing in a given context" in {
