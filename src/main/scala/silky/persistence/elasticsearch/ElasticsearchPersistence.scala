@@ -45,14 +45,15 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
     .execute { get id ref from s"${_index}/$context" }
     .map(response ⇒ if (response.isExists) Some(Entry(context, ref, response.getSourceAsString)) else None)
 
-  def load(context: String, predicate: String ⇒ Boolean) =
-    client.execute {
+  def load(context: String, predicate: String ⇒ Boolean) = client
+    .execute {
       search in s"${_index}/$context" query {
         nestedQuery("metadata") query bool { not(matchQuery("metadata.status", "Deleted")) }
       }
-    }.await.getHits.hits()
+    }.map { response ⇒ response.getHits.hits()
       .filter(hit ⇒ predicate(hit.id()))
       .map(hit ⇒ Entry(context, hit.id(), hit.sourceAsString()))
+    }
 
   def move(ref: String, source: String, target: String) = {
     // retrieve from source

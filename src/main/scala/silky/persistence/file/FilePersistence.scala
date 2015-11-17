@@ -26,10 +26,12 @@ class FilePersistence(baseDir: String, fileExtension: String = "json")(implicit 
       .map(f ⇒ Entry(context, ref, f.slurp()))
   }
 
-  def load(context: String, predicate: String ⇒ Boolean) = filesIn(context)
-    .filter(f ⇒ predicate(f.name.replace(s".$fileExtension", "")))
-    .map(f ⇒ Entry(context, f.name.replace(s".$fileExtension", ""), f.slurp()))
-    .toSeq
+  def load(context: String, predicate: String ⇒ Boolean) = Future {
+    filesIn(context)
+      .filter(f ⇒ predicate(f.name.replace(s".$fileExtension", "")))
+      .map(f ⇒ Entry(context, f.name.replace(s".$fileExtension", ""), f.slurp()))
+      .toSeq
+  }
 
   def move(ref: String, source: String, target: String) = {
     val sourcePath = pathFor(source, ref)

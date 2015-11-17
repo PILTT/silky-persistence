@@ -70,6 +70,6 @@ class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with Befor
   }
 
   "load returns entries whose reference matches a given predicate in a given context" in {
-    persistence.load("tickets", predicate = _.matches("T0000000[1-4]")) must contain only (ticket2, ticket3)
+    persistence.load("tickets", predicate = _.matches("T0000000[1-4]")).futureValue must contain only (ticket2, ticket3)
   }
 }

@@ -40,7 +40,7 @@ class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixtur
 
   "load returns entries whose reference matches a given predicate in a given context" in { td ⇒
     new Fixture(td.name, message1, ticket1, ticket2, ticket3, ticket4) {
-      persistence.load("tickets", predicate = _.startsWith("T")) must contain only (ticket2, ticket3)
+      persistence.load("tickets", predicate = _.startsWith("T")).futureValue must contain only (ticket2, ticket3)
     }
   }
 
