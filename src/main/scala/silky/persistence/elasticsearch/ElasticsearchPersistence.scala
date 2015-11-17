@@ -30,14 +30,14 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
           |}""".stripMargin
     }.await
 
-  def lastRefAcross(prefix: Char, contexts: String*) = Future {
-    val query = search in _index types (contexts: _*) fetchSource false sort (field sort "_id" order DESC) postFilter prefixFilter("_id", prefix) limit 1
-    val refs  = client.execute { query }.await.getHits.hits().map(_.id())
-    if (refs.isEmpty) "00000000" else refs.head.replace(String.valueOf(prefix), "")
-  }
+  def lastRefAcross(prefix: Char, contexts: String*) = client.execute {
+      search in _index types (contexts: _*) fetchSource false sort (field sort "_id" order DESC) postFilter {
+        prefixFilter("_id", prefix)
+      } limit 1
+    }.map { _.getHits.hits().headOption.fold("00000000")(_.id().replace(String.valueOf(prefix), "")) }
 
   def save(entry: Entry) = client
-    .execute { index into s"${_index}/${entry.context}" id entry.ref source entry.contents}
+    .execute { index into s"${_index}/${entry.context}" id entry.ref source entry.contents }
     .map { response ⇒ if (response.isCreated) entry else entry }  // TODO: perhaps return Either[String, Entry] instead
 
   def find(context: String, ref: String) = client
