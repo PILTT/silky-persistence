@@ -14,7 +14,7 @@ class FilePersistence(baseDir: String, fileExtension: String = "json")(implicit 
     if (files.isEmpty) "00000000" else files.last.stripExtension.tail
   }
 
-  def save(entry: Entry) = {
+  def save(entry: Entry) = Future {
     createIfRequired(directoryFor(entry.context))
     Filepath.save(entry.contents, pathFor(entry.context, entry.ref))
     entry

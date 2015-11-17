@@ -36,14 +36,13 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
     if (refs.isEmpty) "00000000" else refs.head.replace(String.valueOf(prefix), "")
   }
 
-  def save(entry: Entry) = {
-    val response = client.execute { index into s"${_index}/${entry.context}" id entry.ref source entry.contents}.await
-    if (response.isCreated) entry else entry  // TODO: perhaps return Either[String, Entry] instead
-  }
+  def save(entry: Entry) = client
+    .execute { index into s"${_index}/${entry.context}" id entry.ref source entry.contents}
+    .map { response ⇒ if (response.isCreated) entry else entry }  // TODO: perhaps return Either[String, Entry] instead
 
   def find(context: String, ref: String) = client
     .execute { get id ref from s"${_index}/$context" }
-    .map(response ⇒ if (response.isExists) Some(Entry(context, ref, response.getSourceAsString)) else None)
+    .map { response ⇒ if (response.isExists) Some(Entry(context, ref, response.getSourceAsString)) else None }
 
   def load(context: String, predicate: String ⇒ Boolean) = client
     .execute {

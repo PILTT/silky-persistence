@@ -55,6 +55,6 @@ class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixtur
   abstract class Fixture(testName: String, entries: Entry*) {
     val baseDir = s"target/tests/${getClass.getPackage.getName}.$suiteName/$testName/data"
     val persistence = new FilePersistence(baseDir)(concurrent.ExecutionContext.global)
-    entries foreach persistence.save
+    entries map persistence.save map { _.futureValue }
   }
 }
