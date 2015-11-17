@@ -54,7 +54,7 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
       .map(hit ⇒ Entry(context, hit.id(), hit.sourceAsString()))
     }
 
-  def move(ref: String, source: String, target: String) = {
+  def move(ref: String, source: String, target: String) = Future {
     // retrieve from source
     // save to target
     // delete from source

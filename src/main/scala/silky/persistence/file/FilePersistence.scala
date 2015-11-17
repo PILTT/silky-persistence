@@ -33,7 +33,7 @@ class FilePersistence(baseDir: String, fileExtension: String = "json")(implicit 
       .toSeq
   }
 
-  def move(ref: String, source: String, target: String) = {
+  def move(ref: String, source: String, target: String) = Future {
     val sourcePath = pathFor(source, ref)
     require(sourcePath.toFile.exists(), s"$sourcePath does not exist")
     createIfRequired(directoryFor(target))

@@ -47,7 +47,7 @@ class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixtur
   "move simply moves the file containing the given entry from one directory (context) to another" in { td ⇒
     new Fixture(td.name, ticket4) {
       val target = "tickets"
-      persistence.move(ticket4.ref, ticket4.context, target)
+      persistence.move(ticket4.ref, ticket4.context, target).futureValue
       persistence.find(target, ticket4.ref).futureValue mustBe Some(ticket4.copy(context = target))
     }
   }
