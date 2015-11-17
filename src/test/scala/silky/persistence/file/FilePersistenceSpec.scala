@@ -5,7 +5,6 @@ import org.scalatest.{MustMatchers, fixture}
 import silky.persistence.Entry
 
 class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixture.TestDataFixture with ScalaFutures {
-  import concurrent.ExecutionContext.Implicits.global
 
   private val Seq(message1, ticket1, ticket2, ticket3, ticket4) = Seq(
     Entry("messages", "M00000001", "{ \"message\": \"Hello World!\" }"),
@@ -54,7 +53,8 @@ class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixtur
   }
 
   abstract class Fixture(testName: String, entries: Entry*) {
-    val persistence = new FilePersistence(s"target/tests/${getClass.getPackage.getName}.$suiteName/$testName/data")
+    val baseDir = s"target/tests/${getClass.getPackage.getName}.$suiteName/$testName/data"
+    val persistence = new FilePersistence(baseDir)(concurrent.ExecutionContext.global)
     entries foreach persistence.save
   }
 }

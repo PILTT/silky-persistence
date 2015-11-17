@@ -7,7 +7,6 @@ import silky.elasticsearch.EmbeddedElasticsearch
 import silky.persistence.Entry
 
 class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with BeforeAndAfterAll with ElasticSugar with ScalaFutures {
-  import concurrent.ExecutionContext.Implicits.global
 
   private val message1 :: ticket1 :: ticket2 :: ticket3 :: ticket4 :: xs = Seq(
     Entry("messages", "M00000123", "{ \"metadata\": { \"status\": \"Pending\" }, \"message\": \"Hello World!\" }"),
@@ -35,7 +34,7 @@ class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with Befor
   )
 
   private val indexName   = "silky"
-  private val persistence = new ElasticsearchPersistence(indexName, elasticsearch.client)
+  private val persistence = new ElasticsearchPersistence(indexName, elasticsearch.client)(concurrent.ExecutionContext.global)
 
   override def client = elasticsearch.client
 
