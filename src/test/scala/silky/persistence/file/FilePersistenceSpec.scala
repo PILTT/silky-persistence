@@ -28,13 +28,13 @@ class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixtur
 
   "find returns an entry existing in a given context" in { td ⇒
     new Fixture(td.name, message1) {
-      persistence.find("messages", "M00000001") mustBe Some(message1)
+      persistence.find("messages", "M00000001").futureValue mustBe Some(message1)
     }
   }
 
   "find returns none for a non-existent entry in a given context" in { td ⇒
     new Fixture(td.name, message1) {
-      persistence.find("messages", "M00000002") mustBe None
+      persistence.find("messages", "M00000002").futureValue mustBe None
     }
   }
 
@@ -48,7 +48,7 @@ class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixtur
     new Fixture(td.name, ticket4) {
       val target = "tickets"
       persistence.move(ticket4.ref, ticket4.context, target)
-      persistence.find(target, ticket4.ref) mustBe Some(ticket4.copy(context = target))
+      persistence.find(target, ticket4.ref).futureValue mustBe Some(ticket4.copy(context = target))
     }
   }
 

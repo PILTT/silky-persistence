@@ -41,7 +41,7 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
     if (response.isCreated) entry else entry  // TODO: perhaps return Either[String, Entry] instead
   }
 
-  def find(context: String, ref: String) = {
+  def find(context: String, ref: String) = Future {
     val response = client.execute { get id ref from s"${_index}/$context" }.await
     if (response.isExists) Some(Entry(context, ref, response.getSourceAsString)) else None
   }

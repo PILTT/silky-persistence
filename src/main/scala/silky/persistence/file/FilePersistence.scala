@@ -20,9 +20,11 @@ class FilePersistence(baseDir: String, fileExtension: String = "json")(implicit 
     entry
   }
 
-  def find(context: String, ref: String) = filesIn(context)
-    .find(_.name == s"$ref.$fileExtension")
-    .map(f ⇒ Entry(context, ref, f.slurp()))
+  def find(context: String, ref: String) = Future {
+    filesIn(context)
+      .find(_.name == s"$ref.$fileExtension")
+      .map(f ⇒ Entry(context, ref, f.slurp()))
+  }
 
   def load(context: String, predicate: String ⇒ Boolean) = filesIn(context)
     .filter(f ⇒ predicate(f.name.replace(s".$fileExtension", "")))

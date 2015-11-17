@@ -60,13 +60,13 @@ class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with Befor
   }
 
   "find returns an entry existing in a given context" in {
-    persistence.find("messages", "M00000123") mustBe Some(message1)
-    persistence.find("tickets",  "T00000001") mustBe Some(ticket1)
-    persistence.find("incoming", "T00000004") mustBe Some(ticket4)
+    persistence.find("messages", "M00000123").futureValue mustBe Some(message1)
+    persistence.find("tickets",  "T00000001").futureValue mustBe Some(ticket1)
+    persistence.find("incoming", "T00000004").futureValue mustBe Some(ticket4)
   }
 
   "find returns none for a non-existent entry in a given context" in {
-    persistence.find("tickets", "T00000123") mustBe None
+    persistence.find("tickets", "T00000123").futureValue mustBe None
   }
 
   "load returns entries whose reference matches a given predicate in a given context" in {

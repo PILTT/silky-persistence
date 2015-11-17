@@ -5,7 +5,7 @@ import scala.concurrent.Future
 trait Persistence {
   def lastRefAcross(prefix: Char, contexts: String*): Future[String]
   def save(entry: Entry): Entry
-  def find(context: String, ref: String): Option[Entry]
+  def find(context: String, ref: String): Future[Option[Entry]]
   def load(context: String, predicate: String ⇒ Boolean): Seq[Entry]
   def move(ref: String, source: String, target: String): Unit
 }
