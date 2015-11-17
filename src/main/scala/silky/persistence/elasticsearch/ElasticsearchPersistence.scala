@@ -41,10 +41,9 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
     if (response.isCreated) entry else entry  // TODO: perhaps return Either[String, Entry] instead
   }
 
-  def find(context: String, ref: String) = Future {
-    val response = client.execute { get id ref from s"${_index}/$context" }.await
-    if (response.isExists) Some(Entry(context, ref, response.getSourceAsString)) else None
-  }
+  def find(context: String, ref: String) = client
+    .execute { get id ref from s"${_index}/$context" }
+    .map(response ⇒ if (response.isExists) Some(Entry(context, ref, response.getSourceAsString)) else None)
 
   def load(context: String, predicate: String ⇒ Boolean) =
     client.execute {
