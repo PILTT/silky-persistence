@@ -28,7 +28,6 @@ class PostgresPersistence(db: Database)(implicit ctx: ExecutionContext) extends 
   ))
 
   private[postgresql] def optimise()   = db.run(sqlu"VACUUM ANALYZE entries")
-  private[postgresql] def deleteAll()  = db.run(entries.delete)
   private[postgresql] def dropSchema() = db.run(entries.schema.drop)
 
   def lastRefAcross(prefix: Char, contexts: String*) =
