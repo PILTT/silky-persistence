@@ -1,11 +1,13 @@
 package silky.persistence.postgresql
 
 import org.scalatest.concurrent.ScalaFutures
-import org.scalatest.{OptionValues, BeforeAndAfterAll, MustMatchers, WordSpec}
+import org.scalatest.time.{Millis, Seconds, Span}
+import org.scalatest.{BeforeAndAfterAll, MustMatchers, OptionValues, WordSpec}
 import silky.persistence.Entry
 import silky.persistence.postgresql.PostgresDriver.api._
 
 class PostgresPersistenceSpec extends WordSpec with MustMatchers with BeforeAndAfterAll with ScalaFutures with OptionValues {
+  override implicit def patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(50, Millis))
 
   private val persistence = new PostgresPersistence(Database.forURL(
     url    = "jdbc:postgresql://localhost:5432/silky_db",

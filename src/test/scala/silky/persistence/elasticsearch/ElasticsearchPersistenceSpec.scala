@@ -2,11 +2,13 @@ package silky.persistence.elasticsearch
 
 import com.sksamuel.elastic4s.testkit.ElasticSugar
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterAll, MustMatchers, WordSpec}
 import silky.elasticsearch.EmbeddedElasticsearch
 import silky.persistence.Entry
 
 class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with BeforeAndAfterAll with ElasticSugar with ScalaFutures {
+  override implicit def patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(50, Millis))
 
   private val message1 :: ticket1 :: ticket2 :: ticket3 :: ticket4 :: xs = Seq(
     Entry("messages", "M00000123", """{ "metadata": { "status": "Pending" }, "message": "Hello World!" }"""),
