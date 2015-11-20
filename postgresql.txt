@@ -9,8 +9,8 @@ $ nohup /usr/local/bin/postgres -D /usr/local/var/postgres > postgres.log 2>&1 &
 # username: `whoami`
 # password: blank
 
-$ createuser silky-app
-$ createdb --owner=silky-app --encoding=UTF8 silky-db
+psql -c "CREATE USER silky_app WITH CREATEDB;" --username=`whoami` --dbname=postgres
+psql -c "CREATE DATABASE silky_db WITH ENCODING 'UTF8' OWNER silky_app;" --username=`whoami` --dbname=postgres
 
 # interactive console
-$ psql -U silky-app -W silky-db
+$ psql -U silky_app -W silky_db
