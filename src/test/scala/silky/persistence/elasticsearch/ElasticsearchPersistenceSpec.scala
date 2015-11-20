@@ -9,22 +9,22 @@ import silky.persistence.Entry
 class ElasticsearchPersistenceSpec extends WordSpec with MustMatchers with BeforeAndAfterAll with ElasticSugar with ScalaFutures {
 
   private val message1 :: ticket1 :: ticket2 :: ticket3 :: ticket4 :: xs = Seq(
-    Entry("messages", "M00000123", "{ \"metadata\": { \"status\": \"Pending\" }, \"message\": \"Hello World!\" }"),
-    Entry("tickets",  "T00000001", "{ \"metadata\": { \"status\": \"Deleted\" }, \"quantity\":  100 }"),
-    Entry("tickets",  "T00000002", "{ \"metadata\": { \"status\": \"Active\"  }, \"quantity\":  200 }"),
-    Entry("tickets",  "T00000003", "{ \"metadata\": { \"status\": \"Active\"  }, \"quantity\":  300 }"),
-    Entry("incoming", "T00000004", "{ \"metadata\": { \"status\": \"Pending\" }, \"quantity\":  400 }"),
-    Entry("tickets",  "T00000005", "{ \"metadata\": { \"status\": \"Deleted\" }, \"quantity\":  500 }"),
-    Entry("tickets",  "T00000006", "{ \"metadata\": { \"status\": \"Active\"  }, \"quantity\":  600 }"),
-    Entry("incoming", "T00000007", "{ \"metadata\": { \"status\": \"Pending\" }, \"quantity\":  700 }"),
-    Entry("tickets",  "T00000008", "{ \"metadata\": { \"status\": \"Active\"  }, \"quantity\":  800 }"),
-    Entry("tickets",  "T00000009", "{ \"metadata\": { \"status\": \"Deleted\" }, \"quantity\":  900 }"),
-    Entry("tickets",  "T00000010", "{ \"metadata\": { \"status\": \"Active\"  }, \"quantity\": 1000 }"),
-    Entry("tickets",  "T00000011", "{ \"metadata\": { \"status\": \"Active\"  }, \"quantity\": 1100 }"),
-    Entry("tickets",  "T00000012", "{ \"metadata\": { \"status\": \"Active\"  }, \"quantity\": 1200 }"),
-    Entry("incoming", "T00000013", "{ \"metadata\": { \"status\": \"Pending\" }, \"quantity\": 1300 }"),
-    Entry("incoming", "T00000014", "{ \"metadata\": { \"status\": \"Pending\" }, \"quantity\": 1400 }"),
-    Entry("incoming", "T00000015", "{ \"metadata\": { \"status\": \"Pending\" }, \"quantity\": 1500 }")
+    Entry("messages", "M00000123", """{ "metadata": { "status": "Pending" }, "message": "Hello World!" }"""),
+    Entry("tickets",  "T00000001", """{ "metadata": { "status": "Deleted" }, "quantity":  100 }"""),
+    Entry("tickets",  "T00000002", """{ "metadata": { "status": "Active"  }, "quantity":  200 }"""),
+    Entry("tickets",  "T00000003", """{ "metadata": { "status": "Active"  }, "quantity":  300 }"""),
+    Entry("incoming", "T00000004", """{ "metadata": { "status": "Pending" }, "quantity":  400 }"""),
+    Entry("tickets",  "T00000005", """{ "metadata": { "status": "Deleted" }, "quantity":  500 }"""),
+    Entry("tickets",  "T00000006", """{ "metadata": { "status": "Active"  }, "quantity":  600 }"""),
+    Entry("incoming", "T00000007", """{ "metadata": { "status": "Pending" }, "quantity":  700 }"""),
+    Entry("tickets",  "T00000008", """{ "metadata": { "status": "Active"  }, "quantity":  800 }"""),
+    Entry("tickets",  "T00000009", """{ "metadata": { "status": "Deleted" }, "quantity":  900 }"""),
+    Entry("tickets",  "T00000010", """{ "metadata": { "status": "Active"  }, "quantity": 1000 }"""),
+    Entry("tickets",  "T00000011", """{ "metadata": { "status": "Active"  }, "quantity": 1100 }"""),
+    Entry("tickets",  "T00000012", """{ "metadata": { "status": "Active"  }, "quantity": 1200 }"""),
+    Entry("incoming", "T00000013", """{ "metadata": { "status": "Pending" }, "quantity": 1300 }"""),
+    Entry("incoming", "T00000014", """{ "metadata": { "status": "Pending" }, "quantity": 1400 }"""),
+    Entry("incoming", "T00000015", """{ "metadata": { "status": "Pending" }, "quantity": 1500 }""")
   )
 
   private val elasticsearch = new EmbeddedElasticsearch(

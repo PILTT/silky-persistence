@@ -7,11 +7,11 @@ import silky.persistence.Entry
 class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixture.TestDataFixture with ScalaFutures {
 
   private val Seq(message1, ticket1, ticket2, ticket3, ticket4) = Seq(
-    Entry("messages", "M00000001", "{ \"message\": \"Hello World!\" }"),
-    Entry("deleted",  "T00000001", "{ \"quantity\": 1000 }"),
-    Entry("tickets",  "T00000002", "{ \"quantity\": 2000 }"),
-    Entry("tickets",  "T00000003", "{ \"quantity\": 3000 }"),
-    Entry("incoming", "T00000004", "{ \"quantity\": 4000 }")
+    Entry("messages", "M00000001", """{ "message": "Hello World!" }"""),
+    Entry("deleted",  "T00000001", """{ "quantity": 1000 }"""),
+    Entry("tickets",  "T00000002", """{ "quantity": 2000 }"""),
+    Entry("tickets",  "T00000003", """{ "quantity": 3000 }"""),
+    Entry("incoming", "T00000004", """{ "quantity": 4000 }""")
   )
 
   "lastRefAcross returns the last reference across multiple contexts" in { td ⇒
