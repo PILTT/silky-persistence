@@ -2,7 +2,7 @@
 sudo: false
 language: scala
 scala: 2.10.6
-jdk: oraclejdk7
+jdk: oraclejdk8
 
 addons:
   postgresql: "9.4"
