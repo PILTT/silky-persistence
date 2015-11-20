@@ -4,6 +4,9 @@ language: scala
 scala: 2.10.6
 jdk: oraclejdk7
 
+addons:
+  postgresql: "9.4"
+
 before_script: ./scripts/pre-publish.sh
 script:        ./scripts/ci-build.sh
 after_success: ./scripts/publish.sh
