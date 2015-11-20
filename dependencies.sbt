@@ -23,7 +23,13 @@ val elasticSearch = Seq(
   "org.elasticsearch"      %  "elasticsearch"  % "[1.7.3,1.7.99]" % "provided"
 )
 
-val productionDependencies = slf4j ++ elasticSearch
+val postgresql = Seq(
+  "com.github.tminglei" %% "slick-pg"  % "0.10.1"/*,
+  "com.typesafe.slick"  %% "slick"     % "3.1.0"           % "provided",
+  "org.postgresql"      % "postgresql" % "9.4-1205-jdbc42" % "provided"*/
+)
+
+val productionDependencies = slf4j ++ elasticSearch ++ postgresql
 
 val testDependencies = log4j ++ Seq(
   "com.sksamuel.elastic4s"  %% "elastic4s-testkit" % elastic4sVersion % "test" notTransitive(),
