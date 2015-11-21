@@ -36,7 +36,25 @@ class PostgresPersistence(db: Database)(implicit ctx: ExecutionContext) extends 
       .result)
 
   def save(entry: Entry) =
-    db.run(entries += (entry.context, entry.ref, JsonString(entry.contents))).map(_ ⇒ entry)
+    // TODO: pending slick + PostgreSQL 9.5's support for UPSERT
+//    db.run(entries.insertOrUpdate((entry.context, entry.ref, JsonString(entry.contents)))).map(_ ⇒ entry)
+    db.run(sqlu"""
+      BEGIN;
+      LOCK TABLE entries IN SHARE ROW EXCLUSIVE MODE;
+      WITH upsert AS (
+        UPDATE entries
+        SET    contents = ${entry.contents}::jsonb
+        WHERE  context  = ${entry.context}
+        AND    ref      = ${entry.ref}
+        RETURNING *)
+      INSERT INTO entries (context, ref, contents)
+      SELECT ${entry.context}
+           , ${entry.ref}
+           , ${entry.contents}::jsonb
+      WHERE NOT EXISTS (SELECT * FROM upsert);
+      COMMIT;
+    """ // credit to http://www.the-art-of-web.com/sql/upsert/
+    ).map(_ ⇒ entry)
 
   def find(context: String, ref: String) =
     db.run(findQuery(context, ref).result.headOption.map(option ⇒ option map toEntry))

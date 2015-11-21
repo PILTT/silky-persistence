@@ -1,6 +1,7 @@
 package silky.persistence.postgresql
 
 import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.exceptions.TestFailedException
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterAll, MustMatchers, OptionValues, WordSpec}
 import silky.persistence.Entry
@@ -67,5 +68,15 @@ class PostgresPersistenceSpec extends WordSpec with MustMatchers with BeforeAndA
   "move simply moves the file containing the given entry from one directory (context) to another" in {
     val moved = persistence.move(ticket4.ref, "incoming", "tickets").futureValue
     (moved.context, moved.ref) mustBe ("tickets", ticket4.ref)
+  }
+
+  "save writes updated contents to the database" in {
+    val updated = message1.copy(contents = """{"message": "Hello New World!"}""")
+    persistence.save(updated).futureValue
+    persistence.find(message1.context, message1.ref).futureValue.value mustBe updated
+  }
+
+  "save cannot update an entry with a different context but the same ref" in {
+    a [TestFailedException] mustBe thrownBy (persistence.save(message1.copy(context = "foo")).futureValue)
   }
 }
