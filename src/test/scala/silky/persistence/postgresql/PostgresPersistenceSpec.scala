@@ -9,11 +9,12 @@ import silky.persistence.postgresql.PostgresDriver.api._
 class PostgresPersistenceSpec extends WordSpec with MustMatchers with BeforeAndAfterAll with ScalaFutures with OptionValues {
   override implicit def patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(50, Millis))
 
-  private val persistence = new PostgresPersistence(Database.forURL(
+  private val db = Database.forURL(
     url    = "jdbc:postgresql://localhost:5432/silky_db",
     driver = "org.postgresql.Driver",
-    user   = "silky_app"
-  ))(concurrent.ExecutionContext.global)
+    user   = "silky_app")
+
+  private val persistence = new PostgresPersistence(db)(concurrent.ExecutionContext.global)
 
   private val message1 :: ticket1 :: ticket2 :: ticket3 :: ticket4 :: xs = Seq(
     Entry("messages", "M00000001", """{ "metadata": { "status": "Pending" }, "message": "Hello World!" }"""),
@@ -40,7 +41,7 @@ class PostgresPersistenceSpec extends WordSpec with MustMatchers with BeforeAndA
     persistence.optimise()
   }
 
-  override protected def afterAll() = persistence.dropSchema().futureValue
+  override protected def afterAll() = { persistence.dropSchema().futureValue; db.close() }
 
   "lastRefAcross returns the last reference across multiple contexts" in {
     persistence.lastRefAcross(prefix = 'T', "deleted", "incoming", "tickets").futureValue mustBe "00000015"
