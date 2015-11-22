@@ -1,7 +1,7 @@
 silky-persistence
 =====
 
-A simple persistence API for JSON documents represented as strings.
+A simple Scala persistence API for JSON documents represented as strings.
 
 Bundled implementations can use the filesystem or the client of an Elasticsearch instance.
 
