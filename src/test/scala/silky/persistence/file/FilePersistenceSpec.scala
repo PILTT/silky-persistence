@@ -1,10 +1,10 @@
 package silky.persistence.file
 
-import org.scalatest.MustMatchers._
 import org.scalatest.concurrent.ScalaFutures._
 import org.scalatest.fixture
 import org.scalatest.time.{Millis, Seconds, Span}
 import silky.persistence.Entry
+import silky.persistence.FutureMatchers._
 
 class FilePersistenceSpec extends fixture.WordSpec with fixture.TestDataFixture {
   implicit def patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(50, Millis))
@@ -19,31 +19,31 @@ class FilePersistenceSpec extends fixture.WordSpec with fixture.TestDataFixture 
 
   "lastRefAcross returns the last reference across multiple contexts" in { td ⇒
     new Fixture(td.name, ticket1, ticket2, ticket3, ticket4) {
-      persistence.lastRefAcross(prefix = 'T', "deleted", "incoming", "tickets").futureValue mustBe "00000004"
+      persistence.lastRefAcross(prefix = 'T', "deleted", "incoming", "tickets") willReturn "00000004"
     }
   }
 
   "lastRefAcross returns '00000000' when no matching entries are found in a given set of contexts" in { td ⇒
     new Fixture(td.name, ticket1, ticket2, ticket3, ticket4) {
-      persistence.lastRefAcross(prefix = 'T', "one", "two", "three").futureValue mustBe "00000000"
+      persistence.lastRefAcross(prefix = 'T', "one", "two", "three") willReturn "00000000"
     }
   }
 
   "find returns an entry existing in a given context" in { td ⇒
     new Fixture(td.name, message1) {
-      persistence.find("messages", "M00000001").futureValue mustBe Some(message1)
+      persistence.find("messages", "M00000001") willReturn message1
     }
   }
 
   "find returns none for a non-existent entry in a given context" in { td ⇒
     new Fixture(td.name, message1) {
-      persistence.find("messages", "M00000002").futureValue mustBe None
+      persistence.find("messages", "M00000002") willReturn None
     }
   }
 
   "load returns entries whose reference matches a given predicate in a given context" in { td ⇒
     new Fixture(td.name, message1, ticket1, ticket2, ticket3, ticket4) {
-      persistence.load("tickets", predicate = _.startsWith("T")).futureValue must contain only (ticket2, ticket3)
+      persistence.load("tickets", predicate = _.startsWith("T")) will contain only (ticket2, ticket3)
     }
   }
 
@@ -51,7 +51,7 @@ class FilePersistenceSpec extends fixture.WordSpec with fixture.TestDataFixture 
     new Fixture(td.name, ticket4) {
       val target = "tickets"
       persistence.move(ticket4.ref, ticket4.context, target).futureValue
-      persistence.find(target, ticket4.ref).futureValue mustBe Some(ticket4.copy(context = target))
+      persistence.find(target, ticket4.ref) willReturn ticket4.copy(context = target)
     }
   }
 
