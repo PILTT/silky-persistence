@@ -3,7 +3,10 @@ silky-persistence
 
 A simple Scala persistence API for JSON documents represented as strings.
 
-Bundled implementations can use the filesystem or the client of an Elasticsearch instance.
+It includes implementations for:
+ * the filesystem
+ * Elasticsearch 1.7.x
+ * PostgreSQL 9.4 or above, using [JSONB](https://wiki.postgresql.org/wiki/What's_new_in_PostgreSQL_9.4#JSONB_Binary_JSON_storage)
 
 [![Build Status](https://secure.travis-ci.org/PILTT/silky-persistence.svg)](http://travis-ci.org/PILTT/silky-persistence) [![Coverage Status](https://coveralls.io/repos/PILTT/silky-persistence/badge.svg?branch=master&service=github)](https://coveralls.io/github/PILTT/silky-persistence?branch=master) [![codecov.io](https://codecov.io/github/PILTT/silky-persistence/coverage.svg?branch=master)](https://codecov.io/github/PILTT/silky-persistence?branch=master&view=all)
 
