@@ -1,12 +1,12 @@
 package silky.persistence.elasticsearch
 
 import com.sksamuel.elastic4s.testkit.ElasticSugar
-import org.scalatest.MustMatchers._
 import org.scalatest.concurrent.ScalaFutures._
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterAll, WordSpec}
 import silky.elasticsearch.EmbeddedElasticsearch
 import silky.persistence.Entry
+import silky.persistence.FutureMatchers._
 
 class ElasticsearchPersistenceSpec extends WordSpec with BeforeAndAfterAll with ElasticSugar {
   implicit def patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(50, Millis))
@@ -55,24 +55,24 @@ class ElasticsearchPersistenceSpec extends WordSpec with BeforeAndAfterAll with 
   override protected def afterAll()  = elasticsearch.stop()
 
   "lastRefAcross returns the last reference across multiple contexts" in {
-    persistence.lastRefAcross(prefix = 'T', "incoming", "tickets").futureValue mustBe "00000015"
+    persistence.lastRefAcross(prefix = 'T', "incoming", "tickets") willReturn "00000015"
   }
 
   "lastRefAcross returns '00000000' when no matching entries are found in a given set of contexts" in {
-    persistence.lastRefAcross(prefix = 'M', "incoming", "tickets").futureValue mustBe "00000000"
+    persistence.lastRefAcross(prefix = 'M', "incoming", "tickets") willReturn "00000000"
   }
 
   "find returns an entry existing in a given context" in {
-    persistence.find("messages", "M00000123").futureValue mustBe Some(message1)
-    persistence.find("tickets",  "T00000001").futureValue mustBe Some(ticket1)
-    persistence.find("incoming", "T00000004").futureValue mustBe Some(ticket4)
+    persistence.find("messages", "M00000123") willReturn message1
+    persistence.find("tickets",  "T00000001") willReturn ticket1
+    persistence.find("incoming", "T00000004") willReturn ticket4
   }
 
   "find returns none for a non-existent entry in a given context" in {
-    persistence.find("tickets", "T00000123").futureValue mustBe None
+    persistence.find("tickets", "T00000123") willReturn None
   }
 
   "load returns entries whose reference matches a given predicate in a given context" in {
-    persistence.load("tickets", predicate = _.matches("T0000000[1-4]")).futureValue must contain only (ticket2, ticket3)
+    persistence.load("tickets", predicate = _.matches("T0000000[1-4]")) will contain only (ticket2, ticket3)
   }
 }
