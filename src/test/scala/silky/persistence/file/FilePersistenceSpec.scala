@@ -1,12 +1,13 @@
 package silky.persistence.file
 
-import org.scalatest.concurrent.ScalaFutures
+import org.scalatest.MustMatchers._
+import org.scalatest.concurrent.ScalaFutures._
+import org.scalatest.fixture
 import org.scalatest.time.{Millis, Seconds, Span}
-import org.scalatest.{MustMatchers, fixture}
 import silky.persistence.Entry
 
-class FilePersistenceSpec extends fixture.WordSpec with MustMatchers with fixture.TestDataFixture with ScalaFutures {
-  override implicit def patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(50, Millis))
+class FilePersistenceSpec extends fixture.WordSpec with fixture.TestDataFixture {
+  implicit def patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(50, Millis))
 
   private val Seq(message1, ticket1, ticket2, ticket3, ticket4) = Seq(
     Entry("messages", "M00000001", """{ "message": "Hello World!" }"""),
