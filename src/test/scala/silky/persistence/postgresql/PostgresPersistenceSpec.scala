@@ -1,7 +1,6 @@
 package silky.persistence.postgresql
 
 import org.scalatest.concurrent.ScalaFutures._
-import org.scalatest.exceptions.TestFailedException
 import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterAll, WordSpec}
 import silky.persistence.Entry
@@ -80,6 +79,8 @@ class PostgresPersistenceSpec extends WordSpec with BeforeAndAfterAll {
 
   "save cannot update an entry with a different context but the same ref" in {
     import org.scalatest.MustMatchers._
+    import org.scalatest.exceptions.TestFailedException
+
     a [TestFailedException] mustBe thrownBy (persistence.save(message1.copy(context = "foo")).futureValue)
   }
 }
