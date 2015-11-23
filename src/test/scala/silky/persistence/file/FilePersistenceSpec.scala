@@ -53,6 +53,15 @@ class FilePersistenceSpec extends fixture.WordSpec with fixture.TestDataFixture 
     }
   }
 
+  "move fails for a non-existent entry" in { td ⇒
+    import org.scalatest.MustMatchers._
+    import org.scalatest.exceptions.TestFailedException
+
+    new Fixture(td.name, ticket4) {
+      a [TestFailedException] mustBe thrownBy (persistence.move("foo", "thin-air", "tickets").futureValue)
+    }
+  }
+
   abstract class Fixture(testName: String, entries: Entry*) {
     val baseDir = s"target/tests/${getClass.getPackage.getName}.$suiteName/$testName/data"
     val persistence = new FilePersistence(baseDir)(concurrent.ExecutionContext.global)

@@ -36,7 +36,7 @@ class FilePersistence(baseDir: String, fileExtension: String = "json")(implicit 
 
   def move(ref: String, source: String, target: String) = Future {
     val (sourcePath, targetPath) = (pathFor(source, ref), pathFor(target, ref))
-    require(sourcePath.toFile.exists(), s"$sourcePath does not exist")
+    require(sourcePath.toFile.exists(), s"Entry '$ref' not found in '$source': $sourcePath does not exist")
     createIfRequired(directoryFor(target))
     Filepath.move(sourcePath, targetPath)
     Entry(target, ref, new File(targetPath.toFile).slurp())
