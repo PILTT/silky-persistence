@@ -75,4 +75,18 @@ class ElasticsearchPersistenceSpec extends WordSpec with BeforeAndAfterAll with 
   "load returns entries whose reference matches a given predicate in a given context" in {
     persistence.load("tickets", predicate = _.matches("T0000000[1-4]")) will contain only (ticket2, ticket3)
   }
+
+  "move copies the given entry from one context to another then deletes the original entry" in {
+    val target = "tickets"
+    persistence.move(ticket4.ref, ticket4.context, target) willReturn ticket4.copy(context = target)
+    persistence.find(ticket4.context, ticket4.ref) willReturn None
+  }
+
+  "move fails for a non-existent entry" in {
+    import org.scalatest.MustMatchers._
+    import org.scalatest.exceptions.TestFailedException
+
+    val exception = the [TestFailedException] thrownBy persistence.move("foo", "thin-air", "tickets").futureValue
+    exception.getCause must have message s"requirement failed: Entry 'foo' not found in 'thin-air'"
+  }
 }

@@ -54,10 +54,12 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
       .map(hit ⇒ Entry(context, hit.id(), hit.sourceAsString()))
     }
 
-  def move(ref: String, source: String, target: String) = Future {
-    // retrieve from source
-    // save to target
-    // delete from source
-    Entry(target, ref, "")
+  def move(ref: String, source: String, target: String) = find(source, ref).flatMap { old ⇒
+    require(old.isDefined, s"Entry '$ref' not found in '$source'")
+    remove(old.get) flatMap { e ⇒ save(e.copy(context = target)) }
   }
+
+  private def remove(entry: Entry): Future[Entry] = client
+    .execute { delete id entry.ref from s"${_index}/${entry.context}" }
+    .map { response ⇒ entry }
 }
