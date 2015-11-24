@@ -71,6 +71,14 @@ class PostgresPersistenceSpec extends WordSpec with BeforeAndAfterAll {
     moved.map(v ⇒ (v.context, v.ref)) willReturn ("tickets", ticket4.ref)
   }
 
+  "move fails for a non-existent entry" in {
+    import org.scalatest.MustMatchers._
+    import org.scalatest.exceptions.TestFailedException
+
+    val exception = the [TestFailedException] thrownBy persistence.move("foo", "thin-air", "tickets").futureValue
+    exception.getCause must have message s"requirement failed: Entry 'foo' not found in 'thin-air'"
+  }
+
   "save writes updated contents to the database" in {
     val updated = message1.copy(contents = """{"message": "Hello New World!"}""")
     persistence.save(updated).futureValue

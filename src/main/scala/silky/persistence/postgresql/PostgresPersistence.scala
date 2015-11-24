@@ -64,7 +64,9 @@ class PostgresPersistence(db: Database)(implicit ctx: ExecutionContext) extends 
 
   def move(ref: String, source: String, target: String) =
     db.run(selectContextQuery(ref, source).update(target)
-      .andThen(findQuery(target, ref).result.head.map(toEntry)))
+      .andThen(findQuery(target, ref).result.headOption.map { e ⇒
+        require(e.isDefined, s"Entry '$ref' not found in '$source'")
+        toEntry(e.get) }))
 
   private val findQuery = Compiled((context: Rep[String], ref: Rep[String]) ⇒ entries
     .filter(_.context === context)
