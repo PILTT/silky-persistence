@@ -38,7 +38,7 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
 
   def save(entry: Entry) = client
     .execute { index into s"${_index}/${entry.context}" id entry.ref source entry.contents }
-    .map { response ⇒ if (response.isCreated) entry else entry }  // TODO: perhaps return Either[String, Entry] instead
+    .map { _ ⇒ entry }
 
   def find(context: String, ref: String) = client
     .execute { get id ref from s"${_index}/$context" }
