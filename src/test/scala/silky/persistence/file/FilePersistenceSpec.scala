@@ -58,7 +58,9 @@ class FilePersistenceSpec extends fixture.WordSpec with fixture.TestDataFixture 
     import org.scalatest.exceptions.TestFailedException
 
     new Fixture(td.name, ticket4) {
-      a [TestFailedException] mustBe thrownBy (persistence.move("foo", "thin-air", "tickets").futureValue)
+      val expectedMessage = s"requirement failed: Entry 'foo' not found in 'thin-air': $baseDir/thin-air/foo.json does not exist"
+      val exception = the [TestFailedException] thrownBy persistence.move("foo", "thin-air", "tickets").futureValue
+      exception.getCause must have message expectedMessage
     }
   }
 
