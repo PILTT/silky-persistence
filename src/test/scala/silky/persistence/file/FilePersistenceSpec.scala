@@ -50,6 +50,7 @@ class FilePersistenceSpec extends fixture.WordSpec with fixture.TestDataFixture 
   "move simply moves the file containing the given entry from one directory (context) to another" in { td ⇒
     new Fixture(td.name, ticket4) {
       persistence.move(ticket4.ref, ticket4.context, "tickets") willReturn ticket4.copy(context = "tickets")
+      persistence.find(ticket4.context, ticket4.ref) willReturn None
     }
   }
 
