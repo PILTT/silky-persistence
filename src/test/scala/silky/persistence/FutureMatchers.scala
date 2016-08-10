@@ -12,15 +12,24 @@ object FutureMatchers extends MatcherWords {
     import org.scalatest.Assertion
     import org.scalatest.MustMatchers._
     import org.scalatest.OptionValues._
+    import org.scalatest.time.{Millis, Seconds, Span}
     import org.scalatest.words.{ContainWord, ResultOfContainWord}
+
+    implicit def patienceConfig = PatienceConfig(timeout = scaled(Span(10, Seconds)), interval = scaled(Span(100, Millis)))
 
     def will(containWord : ContainWord) : ResultOfContainWord[T] = concept.futureValue must containWord
 
     def willReturn(expected: Any): Assertion = actual mustBe expected
 
-    private def actual: T = concept.futureValue match {
-      case r: Some[T] ⇒ r.value
-      case r ⇒ r
+    private def actual: T = try {
+      concept.futureValue match {
+        case r: Some[T] ⇒ r.value
+        case r ⇒ r
+      }
+    } catch {
+      case t: Throwable ⇒
+        t.printStackTrace()
+        throw t;
     }
   }
 }

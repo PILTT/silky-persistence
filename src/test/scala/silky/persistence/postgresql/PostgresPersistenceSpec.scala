@@ -1,7 +1,6 @@
 package silky.persistence.postgresql
 
 import org.scalatest.concurrent.ScalaFutures._
-import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterAll, WordSpec}
 import silky.persistence.Entry
 import silky.persistence.postgresql.PostgresDriver.api._
@@ -9,7 +8,6 @@ import silky.persistence.FutureMatchers._
 
 class PostgresPersistenceSpec extends WordSpec with BeforeAndAfterAll {
   implicit val execution = concurrent.ExecutionContext.global
-  implicit def patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(50, Millis))
 
   private val db = Database.forURL(
     url    = "jdbc:postgresql://localhost:5432/silky_db",
