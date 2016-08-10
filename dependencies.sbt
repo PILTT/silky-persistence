@@ -27,9 +27,9 @@ val elasticsearch = Seq(
 )
 
 val postgresql = Seq(
-  "com.github.tminglei" %% "slick-pg"  % "0.10.1"/*,
-  "com.typesafe.slick"  %% "slick"     % "3.1.0"           % "provided",
-  "org.postgresql"      % "postgresql" % "9.4-1205-jdbc42" % "provided"*/
+  "com.github.tminglei" %% "slick-pg"  % "0.14.3"   % "provided" exclude("org.postgresql", "postgresql"),
+//  "com.typesafe.slick"  %% "slick"     % "3.1.1"    % "provided",
+  "org.postgresql"      % "postgresql" % "9.4.1209" % "provided"
 )
 
 val productionDependencies = slf4j ++ elasticsearch ++ postgresql
