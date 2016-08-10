@@ -1,12 +1,12 @@
 package silky.persistence.elasticsearch
 
-import com.sksamuel.elastic4s.{KeywordAnalyzer, ElasticClient}
+import com.sksamuel.elastic4s.ElasticClient
 import com.sksamuel.elastic4s.ElasticDsl._
-import com.sksamuel.elastic4s.mappings.FieldType.{NestedType, StringType}
 import org.elasticsearch.search.sort.SortOrder.DESC
 import silky.persistence.{Entry, Persistence}
 
 import scala.concurrent.{ExecutionContext, Future}
+import scala.language.reflectiveCalls
 
 class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit ctx: ExecutionContext) extends Persistence {
 
@@ -23,7 +23,6 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
         """{
           |  "mappings": {
           |    "_default_": {
-          |      "_id": { "index": "not_analyzed" },
           |      "properties": { "metadata": { "type": "nested" } }
           |    }
           |  }
@@ -31,8 +30,10 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
     }.await
 
   def lastRefAcross(prefix: Char, contexts: String*) = client.execute {
-      search in _index types (contexts: _*) fetchSource false sort (field sort "_id" order DESC) postFilter {
-        prefixFilter("_id", prefix)
+    search in _index types (contexts: _*) fetchSource false sort {
+        scriptSort("""doc["_uid"].value.replace(doc["_type"].value + "#", "")""") typed "string" order DESC
+      } postFilter {
+        prefixQuery("_id", prefix)
       } limit 1
     }.map { _.getHits.hits().headOption.fold("00000000")(_.id().replace(String.valueOf(prefix), "")) }
 
@@ -42,7 +43,7 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
 
   def find(context: String, ref: String) = client
     .execute { get id ref from s"${_index}/$context" }
-    .map { response ⇒ if (response.isExists) Some(Entry(context, ref, response.getSourceAsString)) else None }
+    .map { response ⇒ if (response.isExists) Some(Entry(context, ref, response.sourceAsString)) else None }
 
   def load(context: String, predicate: String ⇒ Boolean) = client
     .execute {
@@ -61,5 +62,5 @@ class ElasticsearchPersistence(_index: String, client: ElasticClient)(implicit c
 
   private def remove(entry: Entry): Future[Entry] = client
     .execute { delete id entry.ref from s"${_index}/${entry.context}" }
-    .map { response ⇒ entry }
+    .map { _ ⇒ entry }
 }

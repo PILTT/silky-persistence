@@ -1,18 +1,18 @@
 package silky.elasticsearch
 
 import com.sksamuel.elastic4s.ElasticClient
-import org.elasticsearch.common.settings.{ImmutableSettings, Settings}
+import org.elasticsearch.common.settings.Settings
 import org.elasticsearch.node.NodeBuilder.nodeBuilder
 
 import scala.reflect.io.Directory
 
 class EmbeddedElasticsearch(settings: Settings) {
 
-  def this(dataDir: String, nodeName: String, httpEnabled: Boolean = false, httpPort: Int = 9200) = this(
-    ImmutableSettings.settingsBuilder()
+  def this(pathHome: String, nodeName: String, httpEnabled: Boolean = false, httpPort: Int = 9200) = this(
+    Settings.builder()
       .put("http.enabled", httpEnabled.toString)
       .put("http.port", httpPort.toString)
-      .put("path.data", dataDir)
+      .put("path.home", pathHome)
       .put("node.name", nodeName)
       .build()
   )

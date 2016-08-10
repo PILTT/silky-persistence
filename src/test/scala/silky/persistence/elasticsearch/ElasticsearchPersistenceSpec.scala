@@ -2,14 +2,17 @@ package silky.persistence.elasticsearch
 
 import com.sksamuel.elastic4s.testkit.ElasticSugar
 import org.scalatest.concurrent.ScalaFutures._
-import org.scalatest.time.{Millis, Seconds, Span}
 import org.scalatest.{BeforeAndAfterAll, WordSpec}
-import silky.elasticsearch.EmbeddedElasticsearch
 import silky.persistence.Entry
 import silky.persistence.FutureMatchers._
 
 class ElasticsearchPersistenceSpec extends WordSpec with BeforeAndAfterAll with ElasticSugar {
-  implicit def patienceConfig = PatienceConfig(timeout = Span(2, Seconds), interval = Span(50, Millis))
+  private val indexName = "silky"
+
+  import java.nio.file.Paths, java.util.UUID.randomUUID
+  override lazy val testNodeHomePath = Paths.get(s"target/tests/${getClass.getPackage.getName}.$suiteName/$randomUUID")
+
+  private lazy val persistence = new ElasticsearchPersistence(indexName, createLocalClient)(concurrent.ExecutionContext.global)
 
   private val message1 :: ticket1 :: ticket2 :: ticket3 :: ticket4 :: xs = Seq(
     Entry("messages", "M00000123", """{ "metadata": { "status": "Pending" }, "message": "Hello World!" }"""),
@@ -30,19 +33,8 @@ class ElasticsearchPersistenceSpec extends WordSpec with BeforeAndAfterAll with 
     Entry("incoming", "T00000015", """{ "metadata": { "status": "Pending" }, "quantity": 1500 }""")
   )
 
-  private val elasticsearch = new EmbeddedElasticsearch(
-    dataDir  = s"target/tests/${getClass.getPackage.getName}.$suiteName/${java.util.UUID.randomUUID}",
-    nodeName = "local_node",
-    httpEnabled = true
-  )
-
-  private val indexName   = "silky"
-  private val persistence = new ElasticsearchPersistence(indexName, elasticsearch.client)(concurrent.ExecutionContext.global)
-
-  override def client = elasticsearch.client
-
   override protected def beforeAll() = {
-    elasticsearch.start()
+    System.setSecurityManager(null)
     persistence.createDefaultMappings()
 
     val entries = message1 :: ticket1 :: ticket2 :: ticket3 :: ticket4 :: xs
@@ -51,8 +43,6 @@ class ElasticsearchPersistenceSpec extends WordSpec with BeforeAndAfterAll with 
     refresh(indexName)
     blockUntilCount(entries.size, indexName)
   }
-
-  override protected def afterAll()  = elasticsearch.stop()
 
   "lastRefAcross returns the last reference across multiple contexts" in {
     persistence.lastRefAcross(prefix = 'T', "incoming", "tickets") willReturn "00000015"
