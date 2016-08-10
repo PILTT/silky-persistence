@@ -3,6 +3,7 @@ updateOptions := updateOptions.value.withCachedResolution(cachedResoluton = true
 
 val log4jVersion     = "[2.0.1,2.9.99]"
 val slf4jVersion     = "[1.7.0,1.9.99]"
+val jacksonVersion   = "[2.6.2,2.7.99]"
 val elastic4sVersion = "[2.2.0,2.3.99]"
 val groovyVersion    = "[2.4.4,2.4.99]"
 
@@ -15,8 +16,8 @@ val log4j = Seq(
   "org.apache.logging.log4j" % "log4j-api"        % log4jVersion % "test",
   "org.apache.logging.log4j" % "log4j-core"       % log4jVersion % "test",
   "org.apache.logging.log4j" % "log4j-slf4j-impl" % log4jVersion % "test",
-  "com.fasterxml.jackson.core"       % "jackson-databind"        % "2.6.3" % "test",
-  "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % "2.6.2" % "test" exclude("org.yaml", "snakeyaml")
+  "com.fasterxml.jackson.core"       % "jackson-databind"        % jacksonVersion % "test",
+  "com.fasterxml.jackson.dataformat" % "jackson-dataformat-yaml" % jacksonVersion % "test" exclude("org.yaml", "snakeyaml")
 )
 
 val elasticsearch = Seq(
