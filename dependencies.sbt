@@ -37,7 +37,7 @@ val productionDependencies = slf4j ++ elasticsearch ++ postgresql
 val testDependencies = log4j ++ Seq(
   "com.sksamuel.elastic4s"  %% "elastic4s-testkit" % elastic4sVersion % "test" notTransitive(),
   "org.elasticsearch"       %  "elasticsearch"     % elastic4sVersion classifier "tests",
-  "org.scalatest"           %% "scalatest"         % "3.0.0-M11"      % "test" exclude("org.scala-lang", "scala-reflect")
+  "org.scalatest"           %% "scalatest"         % "3.0.0"          % "test" exclude("org.scala-lang", "scala-reflect")
 )
 
 libraryDependencies <+= scalaVersion { scala_version ⇒ "org.scala-lang" % "scala-reflect" % scala_version }
