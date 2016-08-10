@@ -1,0 +1,22 @@
+# dump everything under the root index
+http http://localhost:9200/silky/_search
+
+# last ref across
+echo '{
+  "size": 1,
+  "post_filter" : {
+    "prefix" : {
+      "_id" : "T"
+    }
+  },
+  "_source" : true,
+  "sort" : [ {
+    "_script" : {
+      "type" : "string",
+      "script" : {
+        "inline": "doc[\"_uid\"].value.replace(doc[\"_type\"].value + \"#\", \"\")"
+      },
+      "order" : "desc"
+    }
+  } ]
+}' | http http://localhost:9200/silky/_search
