@@ -13,4 +13,3 @@ javacOptions  ++= Seq("-Xms512m", "-Xmx512m", "-Xss4m")
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-language:implicitConversions")
 
 coverageHighlighting := false
-graphSettings
