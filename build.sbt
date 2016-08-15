@@ -1,5 +1,4 @@
 import scala.util.Try
-import scoverage.ScoverageSbtPlugin.ScoverageKeys._
 
 name         := "silky-persistence"
 organization := "com.github.piltt"
@@ -11,5 +10,3 @@ crossScalaVersions := Seq("2.10.6", scala_2_11)
 
 javacOptions  ++= Seq("-Xms512m", "-Xmx512m", "-Xss4m")
 scalacOptions ++= Seq("-deprecation", "-unchecked", "-feature", "-language:implicitConversions")
-
-coverageHighlighting := false
